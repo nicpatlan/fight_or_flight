@@ -1,7 +1,7 @@
 class Room():
     def __init__(self):
-        self._description = "generate something descriptive"
         self._monster = Monster()
+        self._description = f'generate something descriptive and mention {self._monster.description()}'
         self._occupied = True
         self._loot = [Scroll(), Potion()]
 
