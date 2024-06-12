@@ -1,12 +1,12 @@
 class Room():
     def __init__(self, monster):
         self._monster = monster
-        self._description = f'generate something descriptive and mention {self._monster.description()}'
+        self._description = f'generate something descriptive and mention '
         self._occupied = True
         self._loot = ['Scroll', 'Potion']
 
     def description(self):
-        print(self._description)
+        print(self._description + self._monster.description())
 
     def get_monster(self):
         return self._monster
@@ -19,4 +19,6 @@ class Room():
         self._loot.extend(self._monster.get_loot())
 
     def get_loot(self):
-        return self._loot
+        loot = self._loot
+        self._loot = []
+        return loot

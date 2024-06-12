@@ -24,7 +24,9 @@ class Player(Entity):
         return action
 
     def fight(self, monster):
+        engaged = False
         while self.is_alive() and monster.is_alive():
+            engaged = True
             print('Choose your action:')
             print('attack, item, run')
             fight_action = input()
@@ -54,8 +56,9 @@ class Player(Entity):
                 print(f'{monster.get_name()} attacks you for {damage} damage!')
                 self.dec_hp(damage)
                 print(f'You have {self.get_hp()} remaining!')
-        if not monster.is_alive():
-            print(f'You have slain {monster.get_name()}!')
+        if not monster.is_alive() and engaged:
+            print(f'You have slain a monster!')
+            print(f'A {monster.get_name()} now lies before you.')
         if not self.is_alive():
             print(f'You have been slain by {monster.get_name()}!')
         return True

@@ -44,6 +44,8 @@ class Entity():
         self._hp -= amount
         if self._hp < 1:
             self._alive = False
+            old_name = self._name
+            self._name = f'dead {old_name}' 
 
     def get_attack(self):
         return self._attack

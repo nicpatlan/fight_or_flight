@@ -14,12 +14,11 @@ class Tower():
 
     def _generate_room(self):
         # add room to tower list of rooms
-        self._rooms.append(Room(Monster('a kobold', 1, 3, 1, 1)))
+        self._rooms.append(Room(Monster('kobold', 1, 3, 5, 1)))
 
     def _player_enter_room(self):
         # describe the room and its contents
-        cur_room = self._rooms[self._room_idx]
-        cur_room.description()
+        self._rooms[self._room_idx].description()
         moved = False
 
         # as long as the player is in the current room
@@ -27,18 +26,19 @@ class Tower():
             action = self._player.prompt_action()
 
             # no searching if a monster is present
-            if action == 'loot' and cur_room.get_occupied():
+            if action == 'loot' and self._rooms[self._room_idx].get_occupied():
                 action = 'fight'
 
             # respond to player action
             if action == 'fight':
                 # monster and player fight
-                if not self._player.fight(cur_room.get_monster()):
+                if not self._player.fight(self._rooms[self._room_idx].get_monster()):
                     break
-                if not cur_room.get_monster().is_alive():
-                    cur_room.set_not_occupied()
+                if not self._rooms[self._room_idx].get_monster().is_alive():
+                    self._rooms[self._room_idx].set_not_occupied()
             elif action == 'loot':
-                loot = cur_room.get_loot()
+                loot = self._rooms[self._room_idx].get_loot()
+                print(f'You receive {loot} from this room.')
                 self._player.receive_loot(loot)
             elif action == 'flight' or action == 'advance':
                 moved = True
@@ -47,6 +47,8 @@ class Tower():
 
         if action == 'flight':
             self._room_idx -= 1
+            if self._room_idx < 0:
+                self._room_idx = 0
         elif action == 'advance':
             self._room_idx += 1
             if len(self._rooms) == self._room_idx:

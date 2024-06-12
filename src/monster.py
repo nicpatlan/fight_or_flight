@@ -6,7 +6,9 @@ class Monster(Entity):
         self._loot = ['Gold']
 
     def description(self):
-        return f'a scary monster: {self.get_name()}'
+        return f'a {self.get_name()}'
 
     def get_loot(self):
-        return self._loot
+        loot = self._loot
+        self._loot = []
+        return loot
