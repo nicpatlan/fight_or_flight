@@ -1,5 +1,6 @@
 class Entity():
-    def __init__(self, level, hp, attack, defense):
+    def __init__(self, name, level, hp, attack, defense):
+        self._name = name
         self._level = level
         self._max_hp = hp
         self._hp = hp
@@ -7,13 +8,18 @@ class Entity():
         self._defense = defense
         self._alive = True
 
+    def get_name(self):
+        return self._name
+
     def get_level(self):
         return self._level
 
     def level_up(self, amount):
-        self._level += val
-        self._max_hp = 10 * self._level
+        self._level += amount
+        self.inc_max_hp(amount * 10)
         self._hp = self._max_hp
+        self.inc_attack(amount * 2)
+        self.inc_defense(amount * 2)
 
     def get_max_hp(self):
         return self._max_hp
@@ -61,8 +67,5 @@ class Entity():
         if self._defense < 0:
             self._defense = 0
 
-    def get_alive(self):
+    def is_alive(self):
         return self._alive
-
-    def set_not_alive(self):
-        self._alive = False
