@@ -25,12 +25,12 @@ class Item():
             print(f'You gain {amount} hp.')
             print(f'You have {player.get_hp()} hp.')
         elif self._name == ITEM_LIST[1]:
-            amount = player.get_level()
+            amount = (player.get_level() + 1) // 2
             player.inc_attack(amount)
             print(f'You gain {amount} attack.')
             print(f'You have {player.get_attack()} attack.')
         elif self._name == ITEM_LIST[2]:
-            amount = player.get_level()
+            amount = (player.get_level() + 1) // 2
             player.inc_defense(amount)
             print(f'You gain {amount} defense.')
             print(f'You have {player.get_defense()} defense.')
@@ -41,7 +41,7 @@ class Item():
             if monster.is_alive():
                 print(f'The {monster.get_name()} has {monster.get_hp()} hp.')
         elif self._name == ITEM_LIST[4]:
-            amount = player.get_level()
+            amount = (player.get_level() + 1) // 2
             monster.dec_attack(amount)
             monster.dec_defense(amount)
             print(f'The {monster.get_name()}s shrinks before your eyes!')

@@ -29,7 +29,10 @@ class Tower():
         # add room to tower list of rooms
         random_val = random.randrange(6)
         room_loot = [generate_item(random_val)]
-        level = self._player.get_level()
+        level_mod = random.randrange(-1, 1)
+        level = self._player.get_level() + level_mod
+        att_mod = self._player.get_attack() // 4
+        def_mod = self._player.get_defense() // 4
         monster_loot = [generate_gold() for i in range(level)]
         rarity = random.randrange(100)
         if rarity > 89:
@@ -41,7 +44,11 @@ class Tower():
             random_val = random.randrange(1, 5)
         else:
             random_val = random.randrange(4)
-        room_monster = generate_monster(random_val, level, monster_loot) 
+        room_monster = generate_monster(random_val, 
+                                        level, 
+                                        att_mod, 
+                                        def_mod, 
+                                        monster_loot) 
         self._rooms.append(Room(room_monster, room_loot))
 
     def prompt_action(self):
@@ -146,4 +153,8 @@ class Tower():
         if self._player.is_alive():
             self._player_enter_room()
         else:
-            print('Game Over: how much gold did you get?')
+            gold = 0
+            for item in self._player.get_inventory():
+                if item[0].get_name() == 'Gold':
+                    gold = item[1]
+            print(f'Game Over: how much gold did you get? {gold} shiny gold pieces')

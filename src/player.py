@@ -17,7 +17,6 @@ class Player(Entity):
         self._level += amount
         self.inc_max_hp(amount * 2)
         self._hp = self._max_hp
-        self._xp_to_level = self.get_level()  # TODO adjust these too
         if random.randrange(2) == 0:
             self.inc_attack(amount)
         else:
@@ -29,9 +28,12 @@ class Player(Entity):
     def inc_xp(self, amount):
         self._xp += amount
         print(f'You gained {amount} xp.')
+        gained_levels = 0
         if self._xp >= self._xp_to_level:
-            gained_levels = self._xp // self._xp_to_level
-            self._xp %= self._xp_to_level
+            while self._xp >= self._xp_to_level:
+                gained_levels += 1
+                self._xp -= self._xp_to_level
+                self._xp_to_level += 1
             self.level_up(gained_levels)
             print(f'Your level increased!')
             print(f'You are now level {self.get_level()}.')

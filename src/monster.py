@@ -7,13 +7,15 @@ MONSTER_LIST = [('kobold', 2, 1, 1),
                 ('bugbear', 7, 3, 3),
                 ('drake', 8, 4, 4)] 
 
-def generate_monster(random_val, level, loot): 
+def generate_monster(random_val, level, att_mod, def_mod, loot): 
     attribute = MONSTER_LIST[random_val]
+    if level == 0:
+        level = 1
     return Monster(attribute[0],
                    level,
                    attribute[1] * level,
-                   attribute[2] * level,
-                   attribute[3] * level,
+                   attribute[2] * level + att_mod,
+                   attribute[3] * level + def_mod,
                    loot)
 
 class Monster(Entity):
@@ -23,7 +25,7 @@ class Monster(Entity):
         self._loot = loot
 
     def description(self):
-        return f'a {self.get_name()}'
+        return f'{self.get_name()}'
 
     def get_xp_gain(self):
         return self._xp_gain
