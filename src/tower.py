@@ -1,24 +1,24 @@
 import random
 from player import Player
-from monster import Monster
+from monster import generate_monster
 from room import Room
-from items import ITEM_LIST, Item
+from items import generate_item, generate_gold
 
 def print_break():
-    print('=============================================')
+    print('============================================================')
     print('')
 
 class Tower():
     def __init__(self, name):
         self._rooms = []
         self._room_idx = 0
-        self._player = Player(name, 1, 10, 1, 1)
+        self._player = Player(name, 1, 10, 2, 1)
 
         # give player some random items
         start_items = []
         for i in range(3):
-            idx = random.randrange(6)
-            start_items.append(Item(ITEM_LIST[idx]))
+            random_val = random.randrange(6)
+            start_items.append(generate_item(random_val))
         self._player.receive_loot(start_items)
         
         # add the first room and enter
@@ -27,11 +27,21 @@ class Tower():
 
     def _generate_room(self):
         # add room to tower list of rooms
-        room_loot = [Item('Potion of Healing'),
-                     Item('Potion of Attack'),
-                     Item('Potion of Defense')]
-        monster_loot = [Item('Gold')]
-        room_monster = Monster('kobold', 1, 3, 5, 0, monster_loot)
+        random_val = random.randrange(6)
+        room_loot = [generate_item(random_val)]
+        level = self._player.get_level()
+        monster_loot = [generate_gold() for i in range(level)]
+        rarity = random.randrange(100)
+        if rarity > 89:
+            for i in range(2):
+                monster_loot.append(generate_item(rarity % 6))
+                random_val = random.randrange(2, 6)
+        elif rarity > 75:
+            monster_loot.append(generate_item(rarity % 6))
+            random_val = random.randrange(1, 5)
+        else:
+            random_val = random.randrange(4)
+        room_monster = generate_monster(random_val, level, monster_loot) 
         self._rooms.append(Room(room_monster, room_loot))
 
     def prompt_action(self):

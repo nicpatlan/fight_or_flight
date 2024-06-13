@@ -5,6 +5,12 @@ ITEM_LIST = ['Potion of Healing',
              'Shrink Scroll',
              'Experience Scroll']
 
+def generate_item(random_val):
+    return Item(ITEM_LIST[random_val])
+
+def generate_gold():
+    return Item('Gold')
+
 class Item():
     def __init__(self, name):
         self._name = name
