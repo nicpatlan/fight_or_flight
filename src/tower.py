@@ -1,4 +1,4 @@
-from player import Player
+from player import Player, print_break
 from monster import Monster
 from room import Room
 
@@ -24,13 +24,17 @@ class Tower():
         # as long as the player is in the current room
         while not moved and self._player.is_alive():
             action = self._player.prompt_action()
-
             # no searching if a monster is present
             if action == 'loot' and self._rooms[self._room_idx].get_occupied():
+                print(f'The {self._rooms[self._room_idx].get_monster().get_name()} moves to engage.')
                 action = 'fight'
 
             # respond to player action
             if action == 'fight':
+                if not self._rooms[self._room_idx].get_occupied():
+                    print(f'There is no monster to fight.')
+                    print_break()
+                    continue
                 # monster and player fight
                 if not self._player.fight(self._rooms[self._room_idx].get_monster()):
                     break
@@ -38,12 +42,14 @@ class Tower():
                     self._rooms[self._room_idx].set_not_occupied()
             elif action == 'loot':
                 loot = self._rooms[self._room_idx].get_loot()
-                print(f'You receive {loot} from this room.')
+                print(f'You find {loot} in the room.')
+                print_break()
                 self._player.receive_loot(loot)
             elif action == 'flight' or action == 'advance':
                 moved = True
             elif action == 'bag':
                 print(self._player.get_inventory())
+                print_break()
 
         if action == 'flight':
             self._room_idx -= 1
