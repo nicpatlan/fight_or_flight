@@ -37,4 +37,3 @@ def use_item(player, monster, item):
     elif item == ITEM_LIST[5]:
         amount = player.get_level() * 2
         player.inc_xp(amount)
-        print(f'You gain {amount} xp. You have {player.get_xp()} total xp.')
