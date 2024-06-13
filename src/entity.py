@@ -14,13 +14,6 @@ class Entity():
     def get_level(self):
         return self._level
 
-    def level_up(self, amount):
-        self._level += amount
-        self.inc_max_hp(amount * 10)
-        self._hp = self._max_hp
-        self.inc_attack(amount * 2)
-        self.inc_defense(amount * 2)
-
     def get_max_hp(self):
         return self._max_hp
 

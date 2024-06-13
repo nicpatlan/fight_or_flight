@@ -28,7 +28,6 @@ class Tower():
             if action == 'loot' and self._rooms[self._room_idx].get_occupied():
                 print(f'The {self._rooms[self._room_idx].get_monster().get_name()} moves to engage.')
                 action = 'fight'
-
             # respond to player action
             if action == 'fight':
                 if not self._rooms[self._room_idx].get_occupied():
@@ -47,9 +46,8 @@ class Tower():
                 self._player.receive_loot(loot)
             elif action == 'flight' or action == 'advance':
                 moved = True
-            elif action == 'bag':
-                print(self._player.get_inventory())
-                print_break()
+            elif action == 'item':
+                self._player.prompt_item_action(self._rooms[self._room_idx].get_monster(), 'not_fight')
 
         if action == 'flight':
             self._room_idx -= 1
