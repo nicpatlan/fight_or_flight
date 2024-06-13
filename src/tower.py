@@ -1,7 +1,8 @@
+import random
 from player import Player
 from monster import Monster
 from room import Room
-from items import use_item, ITEM_LIST
+from items import ITEM_LIST, Item
 
 def print_break():
     print('=============================================')
@@ -11,7 +12,14 @@ class Tower():
     def __init__(self, name):
         self._rooms = []
         self._room_idx = 0
-        self._player = Player(name, 1, 10, 2, 2)
+        self._player = Player(name, 1, 10, 1, 1)
+
+        # give player some random items
+        start_items = []
+        for i in range(3):
+            idx = random.randrange(6)
+            start_items.append(Item(ITEM_LIST[idx]))
+        self._player.receive_loot(start_items)
         
         # add the first room and enter
         self._generate_room()
@@ -19,7 +27,12 @@ class Tower():
 
     def _generate_room(self):
         # add room to tower list of rooms
-        self._rooms.append(Room(Monster('kobold', 1, 3, 5, 1)))
+        room_loot = [Item('Potion of Healing'),
+                     Item('Potion of Attack'),
+                     Item('Potion of Defense')]
+        monster_loot = [Item('Gold')]
+        room_monster = Monster('kobold', 1, 3, 5, 0, monster_loot)
+        self._rooms.append(Room(room_monster, room_loot))
 
     def prompt_action(self):
         print('What will you do?')
@@ -35,9 +48,9 @@ class Tower():
                 print(f'or type back')
                 print_break()
                 item_action = input()
-                if player.check_inventory(item_action):
-                    player.remove_item(item_action)
-                    use_item(player, monster, item_action)
+                if player.check_inventory(item_action) >= 0:
+                    item = player.remove_item(item_action)
+                    item.use_item(player, monster)
                     print_break()
                     return True
                 elif item_action == 'back':

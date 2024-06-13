@@ -47,7 +47,7 @@ class Entity():
         self._attack += amount
 
     def dec_attack(self, amount):
-        self._attack -= attack
+        self._attack -= amount
         if self._attack < 1:
             self._attack = 1
 

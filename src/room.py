@@ -1,9 +1,9 @@
 class Room():
-    def __init__(self, monster):
+    def __init__(self, monster, loot):
         self._monster = monster
         self._description = f'generate something descriptive and mention '
         self._occupied = True
-        self._loot = ['Scroll', 'Potion']
+        self._loot = loot
 
     def description(self):
         print(self._description + self._monster.description())
@@ -16,7 +16,8 @@ class Room():
 
     def set_not_occupied(self):
         self._occupied = False
-        self._loot.extend(self._monster.get_loot())
+        if self._monster is not None:
+            self._loot.extend(self._monster.get_loot())
 
     def get_loot(self):
         loot = self._loot

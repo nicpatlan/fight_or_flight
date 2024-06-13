@@ -1,10 +1,10 @@
 from entity import Entity
 
 class Monster(Entity):
-    def __init__(self, name, level, hp, attack, defense):
+    def __init__(self, name, level, hp, attack, defense, loot):
         super().__init__(name, level, hp, attack, defense)
         self._xp_gain = level
-        self._loot = ['Gold']
+        self._loot = loot
 
     def description(self):
         return f'a {self.get_name()}'

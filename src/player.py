@@ -11,12 +11,7 @@ class Player(Entity):
         super().__init__(name, level, hp, attack, defense)
         self._xp = 0
         self._xp_to_level = level   # TODO adjust this amount
-        self._inventory = [ITEM_LIST[0],
-                           ITEM_LIST[1],
-                           ITEM_LIST[2],
-                           ITEM_LIST[3],
-                           ITEM_LIST[4],
-                           ITEM_LIST[5]]
+        self._inventory = []
 
     def level_up(self, amount):
         self._level += amount
@@ -50,13 +45,31 @@ class Player(Entity):
         return self._inventory
 
     def check_inventory(self, item):
-        return item in self._inventory
+        for idx, element in enumerate(self._inventory):
+            if item == element[0].get_name():
+                return idx
+        return -1
 
     def remove_item(self, item):
-        self._inventory.remove(item)
+        idx = self.check_inventory(item)
+        if idx >= 0:
+            if self._inventory[idx][1] > 1:
+                number = self._inventory[idx][1] - 1
+                element = self._inventory[idx][0]
+                self._inventory[idx] = (element, number)
+                return self._inventory[idx][0]
+            else:
+                item_tuple = self._inventory.pop(idx)
+                return item_tuple[0]
 
     def receive_loot(self, items):
-        self._inventory.extend(items)
+        for item in items:
+            idx = self.check_inventory(item.get_name())
+            if idx >= 0:
+                number = self._inventory[idx][1] + 1
+                self._inventory[idx] = (item, number)
+            else:
+                self._inventory.append((item, 1))
 
     def status(self):
         print(f'Player: {self.get_name()}')
