@@ -35,10 +35,7 @@ class Tower():
                     print_break()
                     continue
                 # monster and player fight
-                if not self._player.fight(self._rooms[self._room_idx].get_monster()):
-                    break
-                if not self._rooms[self._room_idx].get_monster().is_alive():
-                    self._rooms[self._room_idx].set_not_occupied()
+                self._player.fight_round(self._rooms[self._room_idx].get_monster())
             elif action == 'loot':
                 loot = self._rooms[self._room_idx].get_loot()
                 print(f'You find {loot} in the room.')
@@ -47,7 +44,15 @@ class Tower():
             elif action == 'flight' or action == 'advance':
                 moved = True
             elif action == 'item':
-                self._player.prompt_item_action(self._rooms[self._room_idx].get_monster(), 'not_fight')
+                if not self._player.prompt_item_action(self._rooms[self._room_idx].get_monster()):
+                    continue
+                if self._rooms[self._room_idx].get_occupied():
+                    self._player.fight_round(self._rooms[self._room_idx].get_monster(), True)
+            elif action == 'status':
+                self._player.status()
+                print_break()
+            if not self._rooms[self._room_idx].get_monster().is_alive():
+                self._rooms[self._room_idx].set_not_occupied()
 
         if action == 'flight':
             self._room_idx -= 1

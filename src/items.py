@@ -35,6 +35,6 @@ def use_item(player, monster, item):
         print(f'{monster.get_name()} attack decreases by {amount}.')
         print(f'{monster.get_name()} defense decreases by {amount}.')
     elif item == ITEM_LIST[5]:
-        amount = player.get_level()
+        amount = player.get_level() * 2
         player.inc_xp(amount)
-        print(f'You gain {amount} xp.')
+        print(f'You gain {amount} xp. You have {player.get_xp()} total xp.')

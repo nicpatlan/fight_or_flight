@@ -1,3 +1,4 @@
+import random
 from entity import Entity
 from items import use_item, ITEM_LIST
 
@@ -9,6 +10,7 @@ class Player(Entity):
     def __init__(self, name, level, hp, attack, defense):
         super().__init__(name, level, hp, attack, defense)
         self._xp = 0
+        self._xp_to_level = level   # TODO adjust this amount
         self._inventory = [ITEM_LIST[0],
                            ITEM_LIST[1],
                            ITEM_LIST[2],
@@ -18,18 +20,30 @@ class Player(Entity):
 
     def level_up(self, amount):
         self._level += amount
-        self.inc_max_hp(amount * 10)
+        self.inc_max_hp(amount * 2)
         self._hp = self._max_hp
-        self.inc_attack(amount * 2)
-        self.inc_defense(amount * 2)
+        self._xp_to_level = self.get_level()  # TODO adjust these too
+        if random.randrange(2) == 0:
+            self.inc_attack(amount)
+        else:
+            self.inc_defense(amount)
 
     def get_xp(self):
         return self._xp
 
     def inc_xp(self, amount):
         self._xp += amount
-        if self._xp >= self._max_hp:
-            self.level_up()
+        print(f'You gained {amount} xp.')
+        if self._xp >= self._xp_to_level:
+            gained_levels = self._xp // self._xp_to_level
+            self.level_up(gained_levels)
+            print(f'Your level increased!')
+            print(f'You are now level {self.get_level()}.')
+        else:
+            print(f'You have {self.get_xp()} total xp.')
+
+    def get_xp_to_level(self):
+        return self._xp_to_level
 
     def get_inventory(self):
         return self._inventory
@@ -43,14 +57,23 @@ class Player(Entity):
     def receive_loot(self, items):
         self._inventory.extend(items)
 
+    def status(self):
+        print(f'Player: {self.get_name()}')
+        print(f'Level: {self.get_level()}')
+        print(f'Hitpoints: {self.get_hp()}')
+        print(f'Attack: {self.get_attack()}')
+        print(f'Defense: {self.get_defense()}')
+        print(f'XP: {self.get_xp()}')
+        print(f'Next Level: {self.get_xp_to_level()}')
+
     def prompt_action(self):
         print('What will you do?')
-        print('fight, flight, advance, loot, or item')
+        print('fight, flight, advance, loot, item, or status')
         print_break()
         action = input()
         return action
 
-    def prompt_item_action(self, monster, phase):
+    def prompt_item_action(self, monster):
             while True:
                 print('Which item would you like to use?')
                 print(f'{self.get_inventory()}')
@@ -58,21 +81,12 @@ class Player(Entity):
                 print_break()
                 item_action = input()
                 if self.check_inventory(item_action):
-                    if (phase == 'fight' or 
-                        (phase == 'not_fight' and 
-                         item_action.startswith('Potion'))):
-                        self.remove_item(item_action)
-                        use_item(self, monster, item_action)
-                        print_break()
-                        return True
-                    else:
-                        print('Only potion items can be used out of combat.')
+                    self.remove_item(item_action)
+                    use_item(self, monster, item_action)
+                    print_break()
+                    return True
                 elif item_action == 'back':
-                    if phase == 'fight':
-                        self.fight(monster)
-                        return False
-                    else:
-                        return True
+                    return False
                 else:
                     print('You do not have that item.')
 
@@ -97,47 +111,10 @@ class Player(Entity):
                 print_break()
         else:
             print(f'You have slain a monster!')
+            xp = monster.get_xp_gain()
+            self.inc_xp(xp)
             print(f'A {monster.get_name()} now lies before you.')
-        if not self.is_alive():
-            print(f'You have been slain by {monster.get_name()}!')
-        print_break()
-
-    def fight(self, monster):
-        engaged = False
-        while self.is_alive() and monster.is_alive():
-            engaged = True
-            print('Choose your action:')
-            print('attack, item, flee')
             print_break()
-            fight_action = input()
-            if fight_action == 'attack':
-                damage = self.get_attack() - monster.get_defense()
-                if damage < 0:
-                    damage = 0
-                monster.dec_hp(damage)
-                print(f'You attack dealing {damage} damage!')
-                if monster.is_alive():
-                    print(f'{monster.get_name()} now has {monster.get_hp()} hitpoints')
-                print_break()
-            elif fight_action == 'item':
-                if not self.prompt_item_action(monster, 'fight'):
-                    break
-            elif fight_action == 'flee':
-                return False
-            if monster.is_alive():
-                damage = monster.get_attack() - self.get_defense()
-                if damage < 0:
-                    damage = 0
-                print(f'{monster.get_name()} attacks you for {damage} damage!')
-                self.dec_hp(damage)
-                if self.is_alive():
-                    print(f'You have {self.get_hp()} hp remaining!')
-                    print_break()
-
-        if not monster.is_alive() and engaged:
-            print(f'You have slain a monster!')
-            print(f'A {monster.get_name()} now lies before you.')
         if not self.is_alive():
-            print(f'You have been slain by {monster.get_name()}!')
-        print_break()
-        return True
+            print(f'You have been slain by a {monster.get_name()}!')
+            print_break()
