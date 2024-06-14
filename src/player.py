@@ -1,16 +1,11 @@
 import random
 from entity import Entity
-from items import ITEM_LIST
-
-def print_break():
-    print('=============================================')
-    print('')
 
 class Player(Entity):
     def __init__(self, name, level, hp, attack, defense):
         super().__init__(name, level, hp, attack, defense)
         self._xp = 0
-        self._xp_to_level = level   # TODO adjust this amount
+        self._xp_to_level = level
         self._inventory = []
 
     def level_up(self, amount):
